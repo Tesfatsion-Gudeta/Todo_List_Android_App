@@ -8,11 +8,15 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/tasknames"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="16dp"
-            android:hint=" type tasks" />
+            android:autofillHints="enter some task"
+            android:hint=" type tasks"
+
+            android:textSize="20sp" />
     </RelativeLayout>
 
 </RelativeLayout>
