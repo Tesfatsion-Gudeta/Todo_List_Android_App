@@ -4,15 +4,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StrikethroughSpan;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -34,13 +29,12 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RelativeLayout relativeLayout;
+
     private FloatingActionButton add, delete;
     private LinearLayout layout;
     private TextView task;
     private EditText taskName;
     AlertDialog alertDialog;
-
     TaskDatabase taskDB;
 
 
@@ -70,14 +64,12 @@ public class MainActivity extends AppCompatActivity {
         taskDB = Room.databaseBuilder(getApplicationContext(), TaskDatabase.class, "taskDB").addCallback(callback).build();
         retriveData();
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dailog, null);
         taskName = view.findViewById(R.id.tasknames);
 
 
         builder.setView(view);
-
         builder.setTitle("ADD A TASK");
         builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
             @Override
@@ -99,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         alertDialog = builder.create();
-
-
         add = findViewById(R.id.floatingActionButton);
         layout = findViewById(R.id.linearContainer);
         task = findViewById(R.id.textView);
@@ -108,18 +98,10 @@ public class MainActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                taskName.getText().clear();
                 alertDialog.show();
             }
         });
-        if (relativeLayout != null) {
-            relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    delete.setVisibility(View.VISIBLE);
-                    return false;
-                }
-            });
-        }
 
 
     }
@@ -127,28 +109,12 @@ public class MainActivity extends AppCompatActivity {
     private void addCard(String taskName) {
 
         View view = getLayoutInflater().inflate(R.layout.tasks, null);
-        relativeLayout = view.findViewById(R.id.deleting);
-
-
-        if (relativeLayout != null) {
-            relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    delete.setVisibility(View.VISIBLE);
-                    return false;
-                }
-            });
-        }
-
-
         layout.addView(view);
-
-
         task = view.findViewById(R.id.textView2);
         task.setText(taskName);
-
         task.getText();
-        Task t = new Task(task.getText().toString());
+
+        String t = task.getText().toString();
 
         delete = view.findViewById(R.id.floatingActionButton3);
         delete.setOnClickListener(new View.OnClickListener() {
@@ -168,12 +134,9 @@ public class MainActivity extends AppCompatActivity {
     public void addTaskInBackground(Task task1) {
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-        Handler handler = new Handler(Looper.myLooper());
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-
                 taskDB.getTaskDAO().addTask(task1);
 
             }
@@ -181,16 +144,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void deleteTaskInBackground(Task task2) {
+    public void deleteTaskInBackground(String task2) {
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-        Handler handler = new Handler(Looper.myLooper());
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-
-                taskDB.getTaskDAO().deleteTask(task2);
+                taskDB.getTaskDAO().deleteTaskText(task2);
 
             }
         });
@@ -200,14 +160,10 @@ public class MainActivity extends AppCompatActivity {
     public void retriveData() {
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-
         Handler handler = new Handler(Looper.myLooper());
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-
-
-                //taskDB.getTaskDAO().getAllTask();
 
                 List<Task> tasks4 = taskDB.getTaskDAO().getAllTask();
                 handler.post(new Runnable() {
@@ -226,6 +182,4 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    ;
 }

@@ -16,8 +16,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="35dp"
         android:layout_marginBottom="35dp"
+        android:background="#FFFFFF"
         android:clickable="true"
         app:backgroundTint="#E79E9E"
+        app:rippleColor="#FFFFFF"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <TextView

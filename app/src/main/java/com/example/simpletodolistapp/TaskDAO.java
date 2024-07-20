@@ -21,6 +21,9 @@ public interface TaskDAO {
     @Delete
     public void deleteTask(Task taskText);
 
+    @Query("DELETE FROM Task WHERE text=:taskText")
+    void deleteTaskText(String taskText);
+
     @Query("select * from Task")
     public List<Task> getAllTask();
 
