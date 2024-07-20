@@ -1,10 +1,8 @@
-#TodoList Android Application
+<h1>TodoList Android Application</h1>
+<br/>
+<p>This is a simple TodoList android application, this app utilizes Room database for local storage enabling users to add, view and delete tasks.</p><br/>
 
-
-This is a simple TodoList android application, this app utilizes Room database for local storage enabling users to add, view and delete tasks.
-
-#Features
-
+<h2>Features</h2>
 
 Add Tasks: Easily add new tasks to your to-do list.
 
@@ -16,10 +14,8 @@ Local Storage: Utilizes Room database for persistent local storage.
 
 
 
-
-#Technologies Used
-
-
+</br>
+<h2>Technologies Used</h2>
 Java Programming language 
 
 Room Database
