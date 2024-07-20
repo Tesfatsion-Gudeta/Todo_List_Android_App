@@ -16,15 +16,29 @@
             app:cardCornerRadius="20dp">
 
             <RelativeLayout
+                android:id="@+id/deleting"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:longClickable="true"
+                >
+
+
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="0dp" />
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_toEndOf="@+id/checkBox"
+
                     android:layout_marginTop="15dp"
                     android:text="TextView"
                     android:textColor="#000000"
@@ -39,6 +53,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="10dp"
                     android:clickable="true"
+                    android:visibility="invisible"
                     app:srcCompat="@android:drawable/ic_delete" />
 
 

@@ -2,27 +2,46 @@ package com.example.simpletodolistapp;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class MainActivity extends AppCompatActivity {
 
+    private RelativeLayout relativeLayout;
     private FloatingActionButton add, delete;
     private LinearLayout layout;
     private TextView task;
     private EditText taskName;
     AlertDialog alertDialog;
+
+    TaskDatabase taskDB;
 
 
     @Override
@@ -36,9 +55,26 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        RoomDatabase.Callback callback = new RoomDatabase.Callback() {
+            @Override
+            public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                super.onCreate(db);
+            }
+
+            @Override
+            public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                super.onOpen(db);
+            }
+        };
+
+        taskDB = Room.databaseBuilder(getApplicationContext(), TaskDatabase.class, "taskDB").addCallback(callback).build();
+        retriveData();
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dailog, null);
         taskName = view.findViewById(R.id.tasknames);
+
 
         builder.setView(view);
 
@@ -46,7 +82,12 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 addCard(taskName.getText().toString());
+                Task tasks = new Task(taskName.getText().toString());
+                addTaskInBackground(tasks);
+
+
             }
         });
 
@@ -70,26 +111,121 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+        if (relativeLayout != null) {
+            relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    delete.setVisibility(View.VISIBLE);
+                    return false;
+                }
+            });
+        }
+
 
     }
 
     private void addCard(String taskName) {
 
         View view = getLayoutInflater().inflate(R.layout.tasks, null);
+        relativeLayout = view.findViewById(R.id.deleting);
+
+
+        if (relativeLayout != null) {
+            relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    delete.setVisibility(View.VISIBLE);
+                    return false;
+                }
+            });
+        }
+
+
+        layout.addView(view);
+
+
+        task = view.findViewById(R.id.textView2);
+        task.setText(taskName);
+
+        task.getText();
+        Task t = new Task(task.getText().toString());
 
         delete = view.findViewById(R.id.floatingActionButton3);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 layout.removeView(view);
+                deleteTaskInBackground(t);
+
+
             }
         });
 
-        layout.addView(view);
 
-        task = view.findViewById(R.id.textView2);
-        task.setText(taskName);
+    }
+
+
+    public void addTaskInBackground(Task task1) {
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        Handler handler = new Handler(Looper.myLooper());
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                taskDB.getTaskDAO().addTask(task1);
+
+            }
+        });
+
+    }
+
+    public void deleteTaskInBackground(Task task2) {
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        Handler handler = new Handler(Looper.myLooper());
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                taskDB.getTaskDAO().deleteTask(task2);
+
+            }
+        });
+
+    }
+
+    public void retriveData() {
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        Handler handler = new Handler(Looper.myLooper());
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+
+                //taskDB.getTaskDAO().getAllTask();
+
+                List<Task> tasks4 = taskDB.getTaskDAO().getAllTask();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Task task : tasks4) {
+                            addCard(task.getText());
+                        }
+
+                    }
+                });
+
+
+            }
+        });
 
 
     }
+
+    ;
 }
