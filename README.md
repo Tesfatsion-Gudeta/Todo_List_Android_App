@@ -25,9 +25,9 @@ Room Database
 ![Home Screen](./screenshots/image1.jpg)
 
 ### Adding Tasks
-![Add Task Screen](./screenshots/image2.png)
+![Add Task Screen](./screenshots/image2.jpg)
 
 ### Tasks View
-![Tasks](./screenshots/image3.png)
+![Tasks](./screenshots/image3.jpg)
 
 
