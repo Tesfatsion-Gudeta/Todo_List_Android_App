@@ -13,9 +13,21 @@ Delete Tasks: Remove tasks from your list.
 Local Storage: Utilizes Room database for persistent local storage.
 
 
-
 </br>
 <h2>Technologies Used</h2>
 Java Programming language 
 
 Room Database
+
+## App Preview
+
+### Home Screen
+![Home Screen](./screenshots/image1.jpg)
+
+### Adding Tasks
+![Add Task Screen](./screenshots/image2.png)
+
+### Tasks View
+![Tasks](./screenshots/image3.png)
+
+
